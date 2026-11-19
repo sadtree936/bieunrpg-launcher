@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>상점 · 트루먼 클라이언트</title>
+<meta name="description" content="트루먼 클라이언트 포인트 충전 · 치장 상점">
+<link rel="canonical" href="https://sadtree936.github.io/bieunrpg-launcher/store.html">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/legal.css">
+<style>
+  .store { padding: 40px 24px 72px; max-width: 1040px; margin: 0 auto; }
+  .store h1 { margin: 0 0 4px; font-size: 30px; }
+  .sub { margin: 0 0 28px; color: var(--dim); font-size: 14px; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 28px; padding: 16px 18px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); }
+  .who { display: flex; align-items: center; gap: 10px; }
+  .who img { width: 36px; height: 36px; border-radius: 8px; image-rendering: pixelated; background: #222; }
+  .who b { display: block; font-size: 15px; }
+  .who small { color: var(--faint); font-size: 12px; }
+  .pts { margin-left: auto; text-align: right; }
+  .pts small { display: block; color: var(--faint); font-size: 12px; }
+  .pts b { font-size: 26px; color: #FFD27A; font-variant-numeric: tabular-nums; }
+  .login { width: 100%; margin: 0; color: var(--dim); font-size: 14px; }
+  h2 { margin: 32px 0 14px; font-size: 19px; }
+  .sets { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+.set { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 14px; background: linear-gradient(135deg, rgba(255,210,122,.08), var(--card)); border: 1px solid rgba(255,210,122,.28); }
+.set .arts { display: flex; gap: 8px; }
+.set .arts .art { flex: 1; height: 110px; }
+.set .off { align-self: flex-start; padding: 2px 10px; border-radius: 10px; background: #E0503F; color: #fff; font-size: 12px; font-weight: 700; }
+.set s { color: var(--mute, #8A909C); font-size: 13px; margin-right: 6px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .card { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+  .art { position: relative; height: 130px; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .art svg { width: 84%; height: 70%; }
+  .art em { position: absolute; top: 8px; right: 8px; padding: 2px 10px; border-radius: 10px; background: #2E7D4F; color: #fff; font-style: normal; font-size: 12px; font-weight: 700; }
+  .card b { font-size: 16px; }
+  .card p { margin: 0; color: var(--dim); font-size: 13px; line-height: 1.5; }
+  .foot { display: flex; align-items: center; margin-top: auto; padding-top: 6px; }
+  .price { font-size: 17px; font-weight: 700; color: #FFD27A; }
+  button { font: inherit; cursor: pointer; border: 0; }
+  .btn { margin-left: auto; height: 36px; padding: 0 16px; border-radius: 10px; background: var(--acc); color: #fff; font-size: 14px; font-weight: 700; }
+  .btn:disabled { background: rgba(255,255,255,.08); color: var(--faint); cursor: default; }
+  .packs { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .pack { padding: 18px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+  .pack b { font-size: 24px; color: #FFD27A; }
+  .pack small { color: var(--faint); font-size: 13px; }
+  .pack .btn { margin: 8px 0 0; width: 100%; }
+  .coupon { display: flex; gap: 8px; max-width: 420px; }
+  .coupon input { flex: 1; height: 42px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; letter-spacing: 1px; text-transform: uppercase; outline: none; }
+  .coupon input:focus { border-color: var(--acc); }
+  .coupon .btn { margin: 0; height: 42px; }
+  .msg { min-height: 22px; margin: 10px 0 0; font-size: 14px; }
+  .msg.ok { color: #7BE0A0; } .msg.err { color: #FF9A8A; }
+  .note { margin-top: 36px; font-size: 13px; color: var(--faint); line-height: 1.7; }
+  .hist { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .hist td { padding: 8px 6px; border-bottom: 1px solid var(--line); color: var(--dim); }
+  .hist td.d { text-align: right; font-variant-numeric: tabular-nums; color: var(--text); }
+  @media (max-width: 560px) { .pts { margin-left: 0; text-align: left; width: 100%; } }
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="index.html"><img src="assets/truman_logo.png" alt="">트루먼 클라이언트</a><nav><a href="store.html" class="on">상점</a><a href="privacy.html">개인정보 처리방침</a><a href="terms.html">이용약관</a></nav></div></header>
+<main class="store">
+  <h1>상점</h1>
+  <p class="sub">포인트를 충전하고 치장을 삽니다 · 산 치장은 런처와 게임의 '치장'에서 끼웁니다</p>
+  <div class="bar" id="bar"><p class="login">불러오는 중…</p></div>
+
+  <h2>포인트 충전</h2>
+  <div class="packs" id="packs"></div>
+
+  <div id="setBox" hidden><h2>세트 · 같이 사면 할인</h2>
+  <div class="sets" id="sets"></div></div>
+
+  <h2>치장</h2>
+  <div class="grid" id="grid"></div>
+
+  <h2>쿠폰</h2>
+  <form class="coupon" id="coupon"><input id="code" maxlength="24" placeholder="쿠폰 코드" autocomplete="off" spellcheck="false"><button class="btn" type="submit">쿠폰 쓰기</button></form>
+  <p class="msg" id="msg"></p>
+
+  <div id="histBox" hidden><h2>포인트 기록</h2><table class="hist" id="hist"></table></div>
+
+  <p class="note">치장은 겉모습만 바꾸며 게임에 유리한 효과는 없습니다. 트루먼 클라이언트는 Mojang · Microsoft 의 공식 제품이 아니며 관련이 없습니다.<br>
+    결제 · 환불 규정은 결제가 열릴 때 <a href="terms.html">이용약관</a>에 함께 안내합니다.</p>
+</main>
+<footer><div class="wrap"><span>© 트루먼 클라이언트</span><a href="index.html">홈으로</a></div></footer>
+<script src="assets/nebula.js"></script>
+<script src="assets/celestial.js"></script>
+<script src="assets/thunder.js"></script>
+<script src="assets/skull.js"></script>
+<script src="assets/dessert.js"></script>
+<script src="assets/xmas.js"></script>
+<script src="assets/seraph.js"></script>
+<script>
+(function () {
+  const API = 'https://truman-friends.truman-friends.workers.dev';
+  const KEY = 'truman.store';
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  let token = '', me = null, cat = null, defs = [];
+  try { const s = JSON.parse(sessionStorage.getItem(KEY) || 'null'); if (s && s.token) { token = s.token; me = s; } } catch (e) {}
+
+  async function api(path, body) {
+    const r = await fetch(API + path, { method: body ? 'POST' : 'GET', headers: Object.assign({ 'content-type': 'application/json' }, token ? { authorization: 'Bearer ' + token } : {}), body: body ? JSON.stringify(body) : undefined });
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 401 && token) { token = ''; me = null; try { sessionStorage.removeItem(KEY); } catch (e) {} }
+    if (!r.ok) throw new Error(j.error || ('요청 실패(' + r.status + ')'));
+    return j;
+  }
+
+  /** 치장 모양(상자들)을 정면에서 본 그림(SVG). */
+  /** '치장id#크로마' → 색 바꾼 치장(웹 상점 그림용). */
+  function def(id) {
+    const [b, c] = String(id).split('#');
+    const d = defs.find((x) => x.id === b);
+    if (!d || !c) return d;
+    const ch = (d.chromas || []).find((x) => x.id === c);
+    if (!ch) return d;
+    const sw = {};
+    for (const k in ch.colors) sw[k.toUpperCase()] = ch.colors[k];
+    return Object.assign({}, d, { top: ch.top || d.top, bottom: ch.bottom || d.bottom, model: d.model && { part: d.model.part,
+      boxes: (d.model.boxes || []).map((x) => x.slice(0, 6).concat([sw[String(x[6]).toUpperCase()] || x[6]], x.slice(7))),
+      discs: (d.model.discs || []).map((x) => x.slice(0, 5).concat([sw[String(x[5]).toUpperCase()] || x[5]])) } });
+  }
+  function art(id) {
+    const d = def(id);
+    if (!d || !d.model) return '';
+    // 망토: 게임 · 런처와 같은 공식으로 그린 성운 망토 그림
+    if (d.model.fx === 'seraph' && window.Seraph) return `<img src="${window.Seraph.snapshot()}" alt="" style="width:92%;image-rendering:pixelated;filter:drop-shadow(0 6px 16px rgba(160,220,255,.5))">`;
+    if (d.model.part === 'cape') { const lib = d.model.cape === 'celestial' ? window.Celestial : d.model.cape === 'thunder' ? window.Thunder : d.model.cape === 'skull' ? window.Skull : d.model.cape === 'xmas' ? window.Xmas : d.model.cape === 'dessert' ? window.Dessert : window.Nebula; return lib ? `<img src="${lib.snapshot()}" alt="" style="height:78%;aspect-ratio:10/16;image-rendering:pixelated;border-radius:2px;box-shadow:0 6px 18px rgba(40,30,120,.45)">` : ''; }
+    // 등 장식(가방 등)은 뒤에서 본 모습: 좌우 · 앞뒤를 뒤집고, 몸 앞으로 넘어오는 어깨끈(z 2 보다 앞)은 뺀다
+    if (d.model.part === 'body') d.model = { part: 'body', boxes: (d.model.boxes || []).filter((b) => b[2] >= 2).map((b) => [-(b[0] + b[3]), b[1], -(b[2] + b[5]), b[3], b[4], b[5], b[6]]), discs: (d.model.discs || []).map((c) => [-c[0], c[1], -(c[2] + c[4]), c[3], c[4], c[5]]) };
+    // 상자는 네모, 원판(둥근 렌즈)은 원 — 뒤(z 큰 것)부터 그린다
+    const parts = (d.model.boxes || []).map((b) => ({ z: b[2], x0: b[0], y0: b[1], x1: b[0] + b[3], y1: b[1] + b[4], b }))
+      .concat((d.model.discs || []).map((c) => ({ z: c[2], x0: c[0] - c[3], y0: c[1] - c[3], x1: c[0] + c[3], y1: c[1] + c[3], c })))
+      .sort((a, b) => b.z - a.z);
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    for (const p of parts) { x0 = Math.min(x0, p.x0); y0 = Math.min(y0, p.y0); x1 = Math.max(x1, p.x1); y1 = Math.max(y1, p.y1); }
+    const shapes = parts.map((p) => p.b ? `<rect x="${p.b[0] - x0}" y="${p.b[1] - y0}" width="${p.b[3]}" height="${p.b[4]}" fill="${p.b[6]}" shape-rendering="crispEdges"/>`
+      : `<circle cx="${p.c[0] - x0}" cy="${p.c[1] - y0}" r="${p.c[3]}" fill="${p.c[5]}"/>`).join('');
+    return `<svg viewBox="-0.4 -0.4 ${x1 - x0 + 0.8} ${y1 - y0 + 0.8}" preserveAspectRatio="xMidYMid meet">${shapes}</svg>`;
+  }
+  const bg = (id) => { const d = def(id); return d ? `linear-gradient(160deg, ${d.top}, ${d.bottom})` : 'linear-gradient(160deg,#3A4150,#14151A)'; };
+
+  function draw() {
+    const logged = !!(token && me);
+    $('bar').innerHTML = logged
+      ? `<div class="who"><img src="https://mc-heads.net/avatar/${encodeURIComponent(me.uuid || '')}/36" alt=""><span><b>${esc(me.name)}</b><small>로그인됨 · 이 창을 닫으면 로그아웃됩니다</small></span></div>
+         <div class="pts"><small>내 포인트</small><b>${(cat && cat.points || 0).toLocaleString()}P</b></div>`
+      : `<p class="login">런처의 <b>상점 → 충전하기</b>를 누르면 내 계정으로 로그인된 이 페이지가 열립니다. 지금은 상품만 볼 수 있습니다.</p>`;
+    const ready = cat && cat.chargeReady;
+    $('packs').innerHTML = ((cat && cat.packs) || [100, 500, 1000, 3000]).map((p) => `<div class="pack"><b>${p.toLocaleString()}P</b><small>가격은 결제가 열릴 때 안내합니다</small>
+      <button class="btn" type="button" data-charge="${p}" ${ready && logged ? '' : 'disabled'}>${ready ? (logged ? '충전하기' : '로그인 필요') : '결제 준비 중'}</button></div>`).join('');
+    $('grid').innerHTML = ((cat && cat.items) || []).map((i) => `<div class="card"><div class="art" style="background:${bg(i.id)}">${art(i.id)}${i.owned ? '<em>보유 중</em>' : ''}</div>
+      <b>${esc(i.name)}</b><p>${esc(i.chroma ? '렌즈 색만 바뀌는 크로마 · ' + ((def(i.base) || {}).name || '원래 치장') + '을(를) 가진 사람만 살 수 있습니다' : (def(i.id) || {}).desc || '')}</p>
+      <div class="foot"><span class="price">${i.price.toLocaleString()}P</span>
+      <button class="btn" type="button" data-buy="${esc(i.id)}" ${!logged || i.owned ? 'disabled' : ''}>${i.owned ? '보유 중' : logged ? '구매' : '로그인 필요'}</button></div></div>`).join('') || '<p class="sub">아직 판매 중인 상품이 없습니다</p>';
+    const sets = (cat && cat.bundles) || [];
+    $('setBox').hidden = !sets.length;
+    $('sets').innerHTML = sets.map((b) => `<div class="set"><div class="arts">${b.items.map((i) => `<div class="art" style="background:${bg(i.id)}">${art(i.id)}${i.owned ? '<em>보유 중</em>' : ''}</div>`).join('')}</div>
+      <span class="off">-${b.off}%</span><b>${esc(b.name)}</b><p>${esc(b.items.map((i) => i.name).join(' · '))}${b.items.some((i) => i.owned) && !b.owned ? ' · 가진 것은 빼고 계산' : ''}</p>
+      <div class="foot"><span class="price">${b.owned ? '모두 보유' : `<s>${b.listPrice.toLocaleString()}P</s>${b.price.toLocaleString()}P`}</span>
+      <button class="btn" type="button" data-buyset="${esc(b.id)}" ${!logged || b.owned ? 'disabled' : ''}>${b.owned ? '보유 중' : logged ? '세트 구매' : '로그인 필요'}</button></div></div>`).join('');
+    $('coupon').querySelector('button').disabled = !logged;
+  }
+
+  async function load() {
+    try { defs = (await (await fetch('assets/cosmetics.json', { cache: 'no-cache' })).json()).items || []; } catch (e) {}
+    try {
+      cat = token ? await api('/shop/catalog') : await api('/shop/public');
+    } catch (e) {
+      if (!token) { $('bar').innerHTML = `<p class="login">${esc(e.message)}</p>`; return; }
+      cat = await api('/shop/public').catch(() => null);
+    }
+    draw();
+    if (token) {
+      const w = await api('/shop/wallet').catch(() => null);
+      if (w && w.history && w.history.length) {
+        const kind = { buy: '구매', coupon: '쿠폰', admin: '지급', charge: '충전' };
+        $('hist').innerHTML = w.history.map((h) => `<tr><td>${new Date(h.at).toLocaleString('ko-KR')}</td><td>${kind[h.kind] || h.kind}${h.ref ? ' · ' + esc(h.ref) : ''}</td><td class="d">${h.delta > 0 ? '+' : ''}${h.delta.toLocaleString()}P</td></tr>`).join('');
+        $('histBox').hidden = false;
+      }
+    }
+  }
+
+  async function start() {
+    // 런처가 연 주소: #c=한 번 쓰는 코드 → 하루짜리 상점 표로 바꾸고 주소에서 지운다
+    const h = new URLSearchParams(location.hash.slice(1));
+    const code = h.get('c');
+    if (code) {
+      history.replaceState(null, '', location.pathname);
+      try {
+        const r = await api('/web/exchange', { code });
+        token = r.token;
+        me = r;
+        try { sessionStorage.setItem(KEY, JSON.stringify(r)); } catch (e) {}
+      } catch (e) {
+        $('msg').className = 'msg err';
+        $('msg').textContent = e.message;
+      }
+    }
+    await load();
+  }
+
+  document.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-buy]');
+    if (b && !b.disabled) {
+      const it = cat.items.find((i) => i.id === b.dataset.buy);
+      if (!it || !confirm(`${it.name} 을(를) ${it.price.toLocaleString()}P 로 살까요?`)) return;
+      b.disabled = true;
+      try {
+        const r = await api('/shop/buy', { id: it.id });
+        $('msg').className = 'msg ok';
+        $('msg').textContent = `${r.name} 을(를) 샀습니다 · 런처와 게임의 '치장'에서 끼울 수 있습니다`;
+      } catch (err) {
+        $('msg').className = 'msg err';
+        $('msg').textContent = err.message;
+      }
+      await load();
+      return;
+    }
+    const sb = e.target.closest('[data-buyset]');
+    if (sb && !sb.disabled) {
+      const st = (cat.bundles || []).find((x) => x.id === sb.dataset.buyset);
+      if (!st || !confirm(` 을(를) ${st.price.toLocaleString()}P 로 살까요?`)) return;
+      sb.disabled = true;
+      try {
+        const r = await api('/shop/buy', { bundle: st.id });
+        $('msg').className = 'msg ok';
+        $('msg').textContent = ` 을(를) 샀습니다(${r.got.join(' · ')}) · 런처와 게임의 '치장'에서 끼울 수 있습니다`;
+      } catch (err) {
+        $('msg').className = 'msg err';
+        $('msg').textContent = err.message;
+      }
+      await load();
+      return;
+    }
+    const c = e.target.closest('[data-charge]');
+    if (c && !c.disabled) {
+      try { await api('/shop/charge', { pack: +c.dataset.charge }); } catch (err) { $('msg').className = 'msg err'; $('msg').textContent = err.message; }
+    }
+  });
+  $('coupon').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = $('code').value.trim();
+    if (!code || !token) return;
+    try {
+      const r = await api('/shop/coupon', { code });
+      $('msg').className = 'msg ok';
+      $('msg').textContent = '쿠폰을 썼습니다 · ' + r.got.join(' + ') + ' 받음';
+      $('code').value = '';
+    } catch (err) {
+      $('msg').className = 'msg err';
+      $('msg').textContent = err.message;
+    }
+    await load();
+  });
+  start();
+})();
+</script>
+</body>
+</html>
